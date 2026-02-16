@@ -22,7 +22,7 @@ export default function ContactPage() {
             href="mailto:jiangweicheng1209@gmail.com"
             className="inline-block px-8 py-4 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors font-medium text-lg"
           >
-            contact@cookconvert.com
+            jiangweicheng1209@gmail.com
           </a>
         </div>
       </div>
