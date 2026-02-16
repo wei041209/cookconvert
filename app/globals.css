@@ -18,4 +18,26 @@ body {
     rgb(var(--background-start-rgb));
 }
 
+/* Performance optimizations for Core Web Vitals */
+* {
+  box-sizing: border-box;
+}
+
+/* Prevent layout shift for navigation */
+nav {
+  contain: layout style;
+}
+
+/* Optimize font rendering */
+body {
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Reduce paint complexity */
+.bg-white {
+  will-change: auto;
+}
+
 

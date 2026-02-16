@@ -1,13 +1,27 @@
 import type { Metadata } from 'next';
+import dynamic from 'next/dynamic';
 import Link from 'next/link';
-import Converter from '@/components/Converter';
 import ConversionTable from '@/components/ConversionTable';
-import FAQ from '@/components/FAQ';
-import RelatedTools from '@/components/RelatedTools';
+import EEATSection from '@/components/EEATSection';
 import AdSlot from '@/components/AdSlot';
+import JsonLd from '@/components/JsonLd';
+
+// Lazy load below-the-fold components for better performance
+const Converter = dynamic(() => import('@/components/Converter'), {
+  ssr: true,
+});
+
+const FAQ = dynamic(() => import('@/components/FAQ'), {
+  ssr: true,
+});
+
+const RelatedConversions = dynamic(() => import('@/components/RelatedConversions'), {
+  ssr: true,
+});
 import { tspToMl, formatNumber } from '@/lib/conversion';
-import { generateBreadcrumbJsonLd, generateFAQJsonLd, getRelatedTools } from '@/lib/utils';
+import { generateBreadcrumbJsonLd, generateFAQJsonLd, generateArticleJsonLd, getRelatedConversions } from '@/lib/utils';
 import { buildMetadata } from '@/lib/seo';
+import { normalizePathname } from '@/lib/path';
 
 export const metadata: Metadata = buildMetadata({
   pageTitle: 'Teaspoons to Milliliters Converter',
@@ -44,7 +58,8 @@ export default function TspToMlPage() {
     },
   ];
 
-  const relatedTools = getRelatedTools('/tsp-to-ml');
+  const normalizedPath = normalizePathname('/tsp-to-ml');
+  const relatedConversions = getRelatedConversions(normalizedPath);
 
   const breadcrumbs = generateBreadcrumbJsonLd([
     { name: 'Home', url: '/' },
@@ -53,17 +68,24 @@ export default function TspToMlPage() {
   ]);
 
   const faqJsonLd = generateFAQJsonLd(faqs);
+  
+  // Article schema for E-E-A-T
+  const buildDate = process.env.NEXT_PUBLIC_BUILD_TIME 
+    ? new Date(process.env.NEXT_PUBLIC_BUILD_TIME).toISOString()
+    : new Date().toISOString();
+  const articleJsonLd = generateArticleJsonLd({
+    title: 'Teaspoons to Milliliters Converter',
+    description: 'Convert teaspoons to milliliters instantly. Free cooking measurement converter for volume conversions',
+    url: normalizedPath,
+    datePublished: buildDate,
+    dateModified: buildDate,
+  });
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbs) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
-      />
+      <JsonLd data={breadcrumbs} />
+      <JsonLd data={faqJsonLd} />
+      <JsonLd data={articleJsonLd} />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="mb-4 text-sm text-gray-600">
           <Link href="/" className="hover:text-primary-600">Home</Link>
@@ -140,7 +162,13 @@ export default function TspToMlPage() {
 
         <FAQ items={faqs} />
 
-        <RelatedTools tools={relatedTools} />
+        <EEATSection lastUpdated={new Date(buildDate).toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+        })} />
+
+        <RelatedConversions conversions={relatedConversions} />
       </div>
     </>
   );

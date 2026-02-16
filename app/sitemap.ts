@@ -89,7 +89,30 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'monthly',
       priority: 0.5,
     },
+    {
+      url: joinUrl(baseUrl, 'guides'),
+      lastModified: buildTime,
+      changeFrequency: 'monthly',
+      priority: 0.8,
+    },
   ];
+  
+  // Add guide pages
+  const guideSlugs = [
+    'grams-vs-cups-complete-guide',
+    'why-baking-needs-precision',
+    'how-to-measure-flour-correctly',
+    'common-measurement-mistakes-in-baking',
+    'kitchen-conversion-chart-guide',
+  ];
+  guideSlugs.forEach((slug) => {
+    routes.push({
+      url: joinUrl(baseUrl, `guides/${slug}`),
+      lastModified: buildTime,
+      changeFrequency: 'monthly',
+      priority: 0.8,
+    });
+  });
   
   // Add pure math converter pages
   PURE_PAGES.forEach((page) => {
@@ -120,6 +143,32 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: buildTime,
       changeFrequency: 'monthly',
       priority: 0.8,
+    });
+  });
+  
+  // Add programmatic SEO pages: grams-to-cups queries
+  const GRAM_VALUES = [50, 100, 200, 250, 500];
+  GRAM_VALUES.forEach((grams) => {
+    INGREDIENTS.forEach((ingredient) => {
+      routes.push({
+        url: joinUrl(baseUrl, `q/${grams}-grams-${ingredient}-to-cups`),
+        lastModified: buildTime,
+        changeFrequency: 'monthly',
+        priority: 0.7,
+      });
+    });
+  });
+  
+  // Add programmatic SEO pages: cups-to-grams queries
+  const CUP_VALUES = [0.5, 1, 2, 3];
+  CUP_VALUES.forEach((cups) => {
+    INGREDIENTS.forEach((ingredient) => {
+      routes.push({
+        url: joinUrl(baseUrl, `q/${cups}-cups-${ingredient}-to-grams`),
+        lastModified: buildTime,
+        changeFrequency: 'monthly',
+        priority: 0.7,
+      });
     });
   });
   

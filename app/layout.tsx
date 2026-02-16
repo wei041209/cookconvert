@@ -1,9 +1,22 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
+import dynamic from 'next/dynamic';
 import './globals.css';
 import Link from 'next/link';
+import PopularIngredients from '@/components/PopularIngredients';
 
-const inter = Inter({ subsets: ['latin'] });
+// Lazy load search component (client-side only)
+const Search = dynamic(() => import('@/components/Search'), {
+  ssr: false, // Search is client-side only
+});
+
+// Optimize font loading for Core Web Vitals
+const inter = Inter({ 
+  subsets: ['latin'],
+  display: 'swap', // Prevents invisible text during font load
+  preload: true,
+  fallback: ['system-ui', 'arial'], // Fallback fonts
+});
 
 export const metadata: Metadata = {
   title: 'CookConvert - Cooking Measurement Converter',
@@ -11,6 +24,12 @@ export const metadata: Metadata = {
   other: {
     'google-site-verification': 'yG7QPyCAMUkqFQnouoFJDTNDG3T7nwrWZ4yjfJAJ2J0',
   },
+};
+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  viewportFit: 'cover',
 };
 
 export default function RootLayout({
@@ -23,18 +42,32 @@ export default function RootLayout({
       <body className={inter.className}>
         <nav className="bg-white border-b border-gray-200">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between h-16">
-              <div className="flex">
-                <Link href="/" className="flex items-center px-2 py-4 text-xl font-bold text-primary-600">
+            <div className="flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-4 py-3 sm:py-0 sm:h-16">
+              <div className="flex w-full sm:w-auto justify-between items-center">
+                <Link href="/" className="flex items-center px-2 py-2 sm:py-4 text-xl font-bold text-primary-600">
                   CookConvert
                 </Link>
+                <div className="flex sm:hidden items-center space-x-2">
+                  <Link href="/tools" className="px-2 py-2 text-sm font-medium text-gray-700 hover:text-primary-600">
+                    Tools
+                  </Link>
+                  <Link href="/ingredients" className="px-2 py-2 text-sm font-medium text-gray-700 hover:text-primary-600">
+                    Ingredients
+                  </Link>
+                </div>
               </div>
-              <div className="flex items-center space-x-4">
+              <div className="flex items-center w-full sm:flex-1 sm:max-w-md sm:mx-4 order-3 sm:order-2">
+                <Search />
+              </div>
+              <div className="hidden sm:flex items-center space-x-4 order-2 sm:order-3">
                 <Link href="/tools" className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-primary-600">
                   Tools
                 </Link>
                 <Link href="/ingredients" className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-primary-600">
                   Ingredients
+                </Link>
+                <Link href="/guides" className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-primary-600">
+                  Guides
                 </Link>
                 <Link href="/about" className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-primary-600">
                   About
@@ -60,6 +93,7 @@ export default function RootLayout({
                 <ul className="space-y-2 text-sm text-gray-600">
                   <li><Link href="/tools" className="hover:text-primary-600">All Tools</Link></li>
                   <li><Link href="/ingredients" className="hover:text-primary-600">Ingredients</Link></li>
+                  <li><Link href="/guides" className="hover:text-primary-600">Guides</Link></li>
                 </ul>
               </div>
               <div>
@@ -75,6 +109,9 @@ export default function RootLayout({
                   <li><Link href="/contact" className="hover:text-primary-600">Contact Us</Link></li>
                 </ul>
               </div>
+            </div>
+            <div className="mt-8 pt-8 border-t border-gray-200">
+              <PopularIngredients maxItems={16} variant="footer" />
             </div>
             <div className="mt-8 pt-8 border-t border-gray-200 text-center text-sm text-gray-600">
               <p>&copy; {new Date().getFullYear()} CookConvert. All rights reserved.</p>

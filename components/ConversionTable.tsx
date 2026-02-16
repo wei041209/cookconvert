@@ -8,7 +8,7 @@ export default function ConversionTable({ title, headers, rows }: ConversionTabl
   return (
     <div className="bg-white rounded-lg shadow-md p-6 mb-8">
       <h2 className="text-2xl font-bold text-gray-900 mb-4">{title}</h2>
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto" style={{ minHeight: '300px' }}>
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>

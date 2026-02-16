@@ -46,6 +46,7 @@ export default function Converter({
 }: ConverterProps) {
   const [inputValue, setInputValue] = useState<string>('');
   const [result, setResult] = useState<number | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const compute = (value: number): number => {
     switch (converterKey) {
@@ -87,13 +88,15 @@ export default function Converter({
     const num = parseFloat(value);
     if (!isNaN(num) && num >= 0) {
       try {
+        setError(null);
         setResult(compute(num));
-      } catch (error) {
-        console.error('Conversion error:', error);
+      } catch (err: any) {
+        setError(err.message || 'Conversion error occurred');
         setResult(null);
       }
     } else {
       setResult(null);
+      setError(null);
     }
   };
 
@@ -115,7 +118,7 @@ export default function Converter({
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6 mb-8">
+    <div className="bg-white rounded-lg shadow-md p-6 mb-8 min-h-[400px]">
       <h2 className="text-2xl font-bold text-gray-900 mb-6">{title}</h2>
       
       <div className="space-y-4">
@@ -152,8 +155,14 @@ export default function Converter({
           </div>
         )}
 
-        {result !== null && (
-          <div className="mt-6 p-4 bg-primary-50 border border-primary-200 rounded-lg">
+        {error && (
+          <div className="mt-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 min-h-[80px] flex items-center">
+            {error}
+          </div>
+        )}
+
+        {result !== null && !error && (
+          <div className="mt-6 p-4 bg-primary-50 border border-primary-200 rounded-lg min-h-[100px]">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-600">{toUnit}</p>
@@ -171,6 +180,11 @@ export default function Converter({
               )}
             </div>
           </div>
+        )}
+        
+        {/* Reserve space when no result to prevent CLS */}
+        {result === null && !error && (
+          <div className="mt-6 min-h-[100px]" aria-hidden="true" />
         )}
       </div>
     </div>

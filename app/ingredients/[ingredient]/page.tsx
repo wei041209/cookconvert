@@ -4,7 +4,10 @@ import Link from 'next/link';
 import ConversionTable from '@/components/ConversionTable';
 import FAQ from '@/components/FAQ';
 import RelatedTools from '@/components/RelatedTools';
+import RelatedIngredientConversions from '@/components/RelatedIngredientConversions';
+import PopularIngredients from '@/components/PopularIngredients';
 import AdSlot from '@/components/AdSlot';
+import JsonLd from '@/components/JsonLd';
 import {
   INGREDIENTS,
   INGREDIENT_NAMES,
@@ -15,8 +18,10 @@ import { formatNumber } from '@/lib/conversion';
 import {
   generateBreadcrumbJsonLd,
   generateFAQJsonLd,
+  generateArticleJsonLd,
   getRelatedTools,
 } from '@/lib/utils';
+import { normalizePathname } from '@/lib/path';
 import { buildMetadata } from '@/lib/seo';
 
 type Props = {
@@ -145,16 +150,23 @@ export default function IngredientPage({ params }: Props) {
   
   const faqJsonLd = generateFAQJsonLd(faqs);
   
+  // Article schema for E-E-A-T signals
+  const buildDate = process.env.NEXT_PUBLIC_BUILD_TIME 
+    ? new Date(process.env.NEXT_PUBLIC_BUILD_TIME).toISOString()
+    : new Date().toISOString();
+  const articleJsonLd = generateArticleJsonLd({
+    title: `${ingredientName} - Cooking Ingredient Guide`,
+    description: `Learn about ${ingredientName}, its density (${density} grams per cup), and conversion tips. Free cooking ingredient guide with conversion tools`,
+    url: normalizePathname(`/ingredients/${ingredient}`),
+    datePublished: buildDate,
+    dateModified: buildDate,
+  });
+  
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbs) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
-      />
+      <JsonLd data={breadcrumbs} />
+      <JsonLd data={faqJsonLd} />
+      <JsonLd data={articleJsonLd} />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="mb-4 text-sm text-gray-600">
           <Link href="/" className="hover:text-primary-600">Home</Link>
@@ -196,28 +208,7 @@ export default function IngredientPage({ params }: Props) {
 
         <AdSlot position="mid-content" />
 
-        <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Conversion Tools for {ingredientName}</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {INGREDIENT_CONVERTERS.map((converter) => (
-              <Link
-                key={converter}
-                href={`/${converter}/${ingredient}`}
-                className="p-4 border border-gray-200 rounded-lg hover:border-primary-500 hover:bg-primary-50 transition-colors"
-              >
-                <div className="font-medium text-gray-900">
-                  {converter
-                    .split('-')
-                    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-                    .join(' ')}
-                </div>
-                <div className="text-sm text-gray-600 mt-1">
-                  Convert {ingredientName}
-                </div>
-              </Link>
-            ))}
-          </div>
-        </div>
+        <RelatedIngredientConversions ingredient={ingredient} />
 
         <div className="prose max-w-none text-gray-700 mb-8">
           <h2 className="text-2xl font-bold text-gray-900 mb-4">Tips for Measuring {ingredientName}</h2>
@@ -231,6 +222,8 @@ export default function IngredientPage({ params }: Props) {
         </div>
 
         <FAQ items={faqs} />
+
+        <PopularIngredients excludeIngredient={ingredient} maxItems={12} />
 
         <RelatedTools tools={relatedTools} />
       </div>
