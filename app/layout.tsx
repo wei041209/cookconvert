@@ -8,6 +8,9 @@ const inter = Inter({ subsets: ['latin'] });
 export const metadata: Metadata = {
   title: 'CookConvert - Cooking Measurement Converter',
   description: 'Convert cooking measurements instantly. Cups to grams, tablespoons to milliliters, and more. Free cooking conversion tool for bakers and chefs.',
+  other: {
+    'google-site-verification': 'yG7QPyCAMUkqFQnouoFJDTNDG3T7nwrWZ4yjfJAJ2J0',
+  },
 };
 
 export default function RootLayout({
