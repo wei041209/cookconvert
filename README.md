@@ -49,6 +49,28 @@ This will generate a static export in the `out` directory.
 npm start
 ```
 
+### Deployment (Cloudflare Pages)
+
+This project is configured for static export and deployed to Cloudflare Pages.
+
+**Environment Variables:**
+- Set `NEXT_PUBLIC_SITE_URL=https://cookconvertapp.com` in Cloudflare Pages environment variables (Production environment)
+- This ensures canonical URLs, sitemap, and structured data use the correct domain
+
+**Redirects:**
+- The `public/_redirects` file handles domain redirects:
+  - `https://cookconvert.pages.dev/*` → `https://cookconvertapp.com/:splat` (301)
+  - `https://www.cookconvertapp.com/*` → `https://cookconvertapp.com/:splat` (301)
+- This file is automatically copied to `out/_redirects` during build
+- Cloudflare Pages will process these redirects automatically
+
+**Post-Deployment Verification Checklist:**
+- [ ] Visit `https://cookconvert.pages.dev/anything` → Should redirect 301 to `https://cookconvertapp.com/anything`
+- [ ] Visit `https://www.cookconvertapp.com/anything` → Should redirect 301 to `https://cookconvertapp.com/anything`
+- [ ] Visit `https://cookconvertapp.com/sitemap.xml` → Verify all `<loc>` tags use `cookconvertapp.com` domain
+- [ ] View page source of any page → Verify `<link rel="canonical">` uses `cookconvertapp.com` domain
+- [ ] Check JSON-LD structured data → Verify all `url` fields use `cookconvertapp.com` domain
+
 ## Project Structure
 
 ```

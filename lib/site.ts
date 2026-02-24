@@ -34,7 +34,7 @@ export function getSiteUrl(): string {
   if (!rawUrl) {
     // Production fallback for Cloudflare Pages deployment
     if (process.env.NODE_ENV === 'production') {
-      return 'https://cookconvert.pages.dev';
+      return 'https://cookconvertapp.com';
     }
     return 'http://localhost:3000';
   }
@@ -56,12 +56,6 @@ export function getSiteUrl(): string {
     // Just remove trailing slash and return
     url = url.replace(/\/+$/, '');
     return url || 'http://localhost:3000';
-  }
-  
-  // Production override: if URL contains cookconvert.com, replace with pages.dev
-  // This handles cases where env vars are set to the wrong domain
-  if (isProduction && url.includes('cookconvert.com')) {
-    url = url.replace(/https?:\/\/cookconvert\.com/g, 'https://cookconvert.pages.dev');
   }
   
   // Ensure protocol (default to https:// if missing)
