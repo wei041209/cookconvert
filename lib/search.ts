@@ -126,3 +126,4 @@ export function searchIndex(query: string, index: SearchResult[]): SearchResult[
     .map(({ result }) => result);
 }
 
+

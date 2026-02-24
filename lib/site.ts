@@ -32,6 +32,10 @@ export function getSiteUrl(): string {
   
   // If no URL found, use localhost fallback
   if (!rawUrl) {
+    // Production fallback for Cloudflare Pages deployment
+    if (process.env.NODE_ENV === 'production') {
+      return 'https://cookconvert.pages.dev';
+    }
     return 'http://localhost:3000';
   }
   
