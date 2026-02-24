@@ -58,6 +58,12 @@ export function getSiteUrl(): string {
     return url || 'http://localhost:3000';
   }
   
+  // Production override: if URL contains cookconvert.com, replace with pages.dev
+  // This handles cases where env vars are set to the wrong domain
+  if (isProduction && url.includes('cookconvert.com')) {
+    url = url.replace(/https?:\/\/cookconvert\.com/g, 'https://cookconvert.pages.dev');
+  }
+  
   // Ensure protocol (default to https:// if missing)
   // Respect explicit http:// if user configured it (do not force https)
   if (!url.startsWith('http://') && !url.startsWith('https://')) {
