@@ -67,8 +67,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const unitDescription = getUnitDescription(converter);
   
   return buildMetadata({
-    pageTitle: `${converterTitle} Converter`,
-    description: `Convert ${unitDescription}. Free cooking converter`,
+    pageTitle: `${converterTitle} — Accurate Conversion Chart & Free Calculator`,
+    description: `Convert ${unitDescription} for any ingredient. Accurate density-based conversions for baking and cooking.`,
     pathname: `/${converter}`,
   });
 }

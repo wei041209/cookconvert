@@ -118,8 +118,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const density = INGREDIENT_DENSITIES[ingredient];
   
   return buildMetadata({
-    pageTitle: `${ingredientName} - Cooking Ingredient Guide`,
-    description: `Learn about ${ingredientName}, its density (${density} grams per cup), and conversion tips. Free cooking ingredient guide with conversion tools`,
+    pageTitle: `${ingredientName} — Density, Conversion Chart & Cooking Tips`,
+    description: `${ingredientName}: density ${density} g/cup, cups-to-grams table, and measuring tips for baking and cooking.`,
     pathname: `/ingredients/${ingredient}`,
   });
 }

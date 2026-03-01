@@ -258,15 +258,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     : Math.round(result).toString();
 
   const resultUnit = fromUnit === 'grams' ? 'cups' : 'grams';
-  const amountDisplay = fromUnit === 'grams' 
-    ? `${amount}g` 
+  const targetUnitLabel = resultUnit.charAt(0).toUpperCase() + resultUnit.slice(1);
+  const amountDisplay = fromUnit === 'grams'
+    ? `${amount}g`
     : `${amount} ${amount === 1 ? 'cup' : 'cups'}`;
   const resultDisplay = fromUnit === 'grams'
     ? `${resultFormatted} ${result === 1 ? 'cup' : 'cups'}`
     : `${resultFormatted}g`;
 
-  const pageTitle = `${amountDisplay} ${ingredientName} to ${resultUnit.charAt(0).toUpperCase() + resultUnit.slice(1)} - Conversion Calculator`;
-  const description = `Convert ${amountDisplay} of ${ingredientName} to ${resultDisplay}. Free, instant conversion calculator with accurate density values. Perfect for baking and cooking recipes.`;
+  const pageTitle = `${amountDisplay} ${ingredientName} to ${targetUnitLabel} — Exact Result + Conversion Chart`;
+  const description = `${amountDisplay} ${ingredientName} = ${resultDisplay}. Accurate conversion using ${ingredientName}'s density. For baking and cooking.`;
 
   return buildMetadata({
     pageTitle,

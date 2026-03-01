@@ -62,17 +62,21 @@ export async function generateStaticParams() {
 
 function getConverterTitle(converter: string, ingredient: string): string {
   const ingredientName = INGREDIENT_NAMES[ingredient];
-  // Convert slug to readable format (e.g., "cups-to-grams" -> "Cups to Grams")
   const converterName = converter
     .split('-')
     .map((w) => {
-      if (w.toLowerCase() === 'to') {
-        return 'to';
-      }
+      if (w.toLowerCase() === 'to') return 'to';
       return w.charAt(0).toUpperCase() + w.slice(1);
     })
     .join(' ');
   return `${ingredientName}: ${converterName} Converter`;
+}
+
+/** CTR-focused title for metadata only (not used for visible H1). */
+function getConverterMetaTitle(converter: string, ingredient: string): string {
+  const ingredientName = INGREDIENT_NAMES[ingredient];
+  const units = getUnits(converter);
+  return `${units.from} to ${units.to} for ${ingredientName} — Accurate Conversion Chart & Free Calculator`;
 }
 
 function getUnits(converter: string): { from: string; to: string } {
@@ -544,13 +548,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     notFound();
   }
   
-  const title = getConverterTitle(converter, ingredient);
   const ingredientName = INGREDIENT_NAMES[ingredient];
   const units = getUnits(converter);
   
   return buildMetadata({
-    pageTitle: title,
-    description: `Convert ${units.from.toLowerCase()} to ${units.to.toLowerCase()} for ${ingredientName}. Free, instant cooking measurement converter with accurate density values`,
+    pageTitle: getConverterMetaTitle(converter, ingredient),
+    description: `Convert ${units.from.toLowerCase()} to ${units.to.toLowerCase()} for ${ingredientName}. Accurate density-based conversions for baking and cooking.`,
     pathname: `/${converter}/${ingredient}`,
   });
 }
