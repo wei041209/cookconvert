@@ -239,7 +239,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const parsed = parseQuery(query);
 
   if (!parsed) {
-    return {};
+    notFound();
   }
 
   const { amount, fromUnit, ingredient, toUnit } = parsed;

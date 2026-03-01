@@ -111,7 +111,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { ingredient } = params;
   
   if (!INGREDIENTS.includes(ingredient as any)) {
-    return {};
+    notFound();
   }
   
   const ingredientName = INGREDIENT_NAMES[ingredient];
