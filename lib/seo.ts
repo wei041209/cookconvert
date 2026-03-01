@@ -3,7 +3,9 @@ import { getSiteUrl } from './site';
 
 const SITE_NAME = 'CookConvert';
 const DEFAULT_DESCRIPTION_SUFFIX = 'Free cooking measurement converter for bakers and chefs.';
+const BENEFIT_SUFFIX = 'Instant conversion, accurate density values, printable chart, and common kitchen units. Updated 2026.';
 const MAX_DESCRIPTION_LENGTH = 155;
+const MAX_TITLE_LENGTH = 65;
 
 /**
  * Normalize pathname for canonical URLs (aligned with next.config trailingSlash: true)
@@ -31,62 +33,60 @@ function normalizePathname(pathname: string): string {
 }
 
 /**
- * Truncate string at word boundary to fit max length
+ * Truncate string at word boundary to fit max length (no ellipsis).
+ * Used for meta descriptions.
  */
 function truncateAtWordBoundary(text: string, maxLength: number): string {
   if (text.length <= maxLength) {
     return text;
   }
-  
-  // Find last space before maxLength
   const truncated = text.substring(0, maxLength);
   const lastSpace = truncated.lastIndexOf(' ');
-  
   if (lastSpace > 0) {
-    return `${truncated.substring(0, lastSpace)}…`;
+    return truncated.substring(0, lastSpace);
   }
-  
-  // If no space found, truncate and add ellipsis
-  return `${truncated}…`;
+  return truncated;
 }
 
 /**
- * Build a page title with site name suffix
+ * Safe title trim: cap at maxLength without cutting mid-word.
+ * Exported for optional use when building page titles before buildTitle.
+ */
+export function trimTitle(title: string, maxLength: number = MAX_TITLE_LENGTH): string {
+  const t = title.trim();
+  if (t.length <= maxLength) return t;
+  const cut = t.substring(0, maxLength);
+  const lastSpace = cut.lastIndexOf(' ');
+  if (lastSpace > 0) return cut.substring(0, lastSpace).trim();
+  return cut;
+}
+
+/**
+ * Build a page title with site name suffix, trimmed to SERP-friendly length.
  */
 export function buildTitle({ pageTitle }: { pageTitle: string }): string {
-  return `${pageTitle} - ${SITE_NAME}`;
+  const full = `${pageTitle.trim()} - ${SITE_NAME}`;
+  return trimTitle(full, MAX_TITLE_LENGTH);
 }
 
 /**
- * Build a meta description with suffix, avoiding duplication
- * - Appends DEFAULT_DESCRIPTION_SUFFIX if not already present
- * - Ensures final description is <= 155 characters (truncates at word boundary if needed)
+ * Build a meta description with benefit-driven suffix and safe length.
+ * - Appends BENEFIT_SUFFIX when not already present
+ * - Truncates at word boundary to <= MAX_DESCRIPTION_LENGTH
  */
 export function buildDescription({ description }: { description: string }): string {
   let finalDescription = description.trim();
-  
-  // Check if description already contains "CookConvert" or the suffix meaningfully
-  const hasCookConvert = finalDescription.toLowerCase().includes('cookconvert');
-  const hasSuffixMeaning = finalDescription.toLowerCase().includes('free cooking measurement converter') ||
-                          finalDescription.toLowerCase().includes('for bakers and chefs');
-  
-  // Append suffix if not duplicated
-  if (!hasCookConvert && !hasSuffixMeaning) {
-    // Ensure description ends with period before appending
-    if (!finalDescription.endsWith('.')) {
+  const hasBenefit = finalDescription.toLowerCase().includes('instant conversion') ||
+                    finalDescription.toLowerCase().includes('updated 2026');
+  if (!hasBenefit) {
+    if (!finalDescription.endsWith('.') && !finalDescription.endsWith(',')) {
       finalDescription = `${finalDescription}.`;
     }
-    finalDescription = `${finalDescription} ${DEFAULT_DESCRIPTION_SUFFIX}`;
-  } else if (!finalDescription.endsWith('.')) {
-    // Just ensure it ends with period if suffix not appended
-    finalDescription = `${finalDescription}.`;
+    finalDescription = `${finalDescription} ${BENEFIT_SUFFIX}`;
   }
-  
-  // Truncate to max length if needed (soft cap at word boundary)
   if (finalDescription.length > MAX_DESCRIPTION_LENGTH) {
     finalDescription = truncateAtWordBoundary(finalDescription, MAX_DESCRIPTION_LENGTH);
   }
-  
   return finalDescription;
 }
 
