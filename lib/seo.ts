@@ -6,28 +6,27 @@ const DEFAULT_DESCRIPTION_SUFFIX = 'Free cooking measurement converter for baker
 const MAX_DESCRIPTION_LENGTH = 155;
 
 /**
- * Normalize pathname for canonical URLs
+ * Normalize pathname for canonical URLs (aligned with next.config trailingSlash: true)
+ * - Strips query and hash
  * - Trims whitespace
  * - Collapses multiple leading slashes to a single "/"
  * - Ensures it starts with "/"
- * - Removes trailing "/" except when pathname === "/"
+ * - Root stays "/"; non-root paths MUST end with "/" so canonical matches served URL
  */
 function normalizePathname(pathname: string): string {
-  let normalized = pathname.trim();
-  
+  let normalized = pathname.split('?')[0].split('#')[0].trim();
   // Collapse multiple leading slashes to a single "/"
   normalized = normalized.replace(/^\/+/, '/');
-  
   // Ensure it starts with "/"
   if (!normalized.startsWith('/')) {
     normalized = `/${normalized}`;
   }
-  
-  // Remove trailing "/" except for root
-  if (normalized !== '/' && normalized.endsWith('/')) {
-    normalized = normalized.replace(/\/+$/, '');
+  // Root: stay "/"
+  if (normalized === '/') {
+    return normalized;
   }
-  
+  // Non-root: ensure single trailing slash (canonical = final served URL)
+  normalized = normalized.replace(/\/+$/, '') + '/';
   return normalized;
 }
 
