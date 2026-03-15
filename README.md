@@ -1,7 +1,5 @@
 # CookConvert
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-
 **Live Demo:** https://cookconvertapp.com/
 
 A static cooking measurement converter website built with Next.js. Convert between cups, grams, tablespoons, milliliters, and ounces—with ingredient-specific tools (e.g. flour, sugar) and pure unit converters. No backend; all data lives in code and pages are generated at build time.
@@ -90,4 +88,8 @@ Additional technical notes and SEO architecture documents are available in the `
 
 ## License
 
-MIT
+This project is provided for portfolio and demonstration purposes only.
+
+All rights reserved.
+
+The source code may not be copied, modified, redistributed, or used for commercial purposes without permission from the author.
