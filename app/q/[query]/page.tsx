@@ -6,6 +6,7 @@ import EEATSection from '@/components/EEATSection';
 import PopularIngredients from '@/components/PopularIngredients';
 import AdSlot from '@/components/AdSlot';
 import JsonLd from '@/components/JsonLd';
+import ConversionChart from '@/components/ConversionChart';
 
 // Lazy load components
 const FAQ = dynamic(() => import('@/components/FAQ'), {
@@ -34,6 +35,7 @@ import {
 } from '@/lib/utils';
 import { buildMetadata } from '@/lib/seo';
 import { normalizePathname } from '@/lib/path';
+import { getCtrConversionChartData } from '@/lib/ctrConversionChartExperiment';
 
 type Props = {
   params: {
@@ -339,6 +341,14 @@ export default function ConversionQueryPage({ params }: Props) {
     dateModified: buildDate,
   });
 
+  const conversionChartData = getCtrConversionChartData({
+    pathname: queryPath,
+    ingredient,
+    fromUnit,
+    toUnit,
+    centerAmount: amount,
+  });
+
   return (
     <>
       <JsonLd data={breadcrumbs} />
@@ -456,6 +466,14 @@ export default function ConversionQueryPage({ params }: Props) {
             </Link>
           </div>
         </div>
+
+        {conversionChartData && (
+          <ConversionChart
+            intro={`Quick reference for nearby ${ingredientName} conversions using the same density-based formula.`}
+            headers={conversionChartData.headers}
+            rows={conversionChartData.rows}
+          />
+        )}
 
         <FAQ items={faqs} />
 

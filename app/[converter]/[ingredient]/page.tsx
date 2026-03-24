@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import ConversionTable from '@/components/ConversionTable';
+import ConversionChart from '@/components/ConversionChart';
 import EEATSection from '@/components/EEATSection';
 import PopularIngredients from '@/components/PopularIngredients';
 import AdSlot from '@/components/AdSlot';
@@ -40,6 +41,7 @@ import {
 } from '@/lib/utils';
 import { buildMetadata } from '@/lib/seo';
 import { normalizePathname } from '@/lib/path';
+import { getCtrConversionChartData } from '@/lib/ctrConversionChartExperiment';
 
 type Props = {
   params: {
@@ -598,6 +600,22 @@ export default function IngredientConverterPage({ params }: Props) {
     datePublished: buildDate,
     dateModified: buildDate,
   });
+
+  const chartConfig = converter === 'cups-to-grams'
+    ? { fromUnit: 'cups' as const, toUnit: 'grams' as const, centerAmount: 1 }
+    : converter === 'grams-to-cups'
+      ? { fromUnit: 'grams' as const, toUnit: 'cups' as const, centerAmount: 200 }
+      : null;
+
+  const conversionChartData = chartConfig
+    ? getCtrConversionChartData({
+        pathname: normalizedPath,
+        ingredient,
+        fromUnit: chartConfig.fromUnit,
+        toUnit: chartConfig.toUnit,
+        centerAmount: chartConfig.centerAmount,
+      })
+    : null;
   
   return (
     <>
@@ -654,6 +672,14 @@ export default function IngredientConverterPage({ params }: Props) {
           headers={[units.from, units.to]}
           rows={tableData}
         />
+
+        {conversionChartData && (
+          <ConversionChart
+            intro={`Quick reference for common nearby ${units.from.toLowerCase()} to ${units.to.toLowerCase()} values for ${ingredientName}.`}
+            headers={conversionChartData.headers}
+            rows={conversionChartData.rows}
+          />
+        )}
         
         <div className="prose max-w-none text-gray-700 mb-8">
           <h2 className="text-2xl font-bold text-gray-900 mb-4">Understanding {ingredientName} Conversions</h2>
