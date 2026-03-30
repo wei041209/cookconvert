@@ -118,7 +118,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const density = INGREDIENT_DENSITIES[ingredient];
   
   return buildMetadata({
-    pageTitle: `${ingredientName} — Density, Conversion Chart & Cooking Tips`,
+    pageTitle: `${ingredientName} — Density, Conversion Table & Cooking Tips`,
     description: `${ingredientName}: density ${density} g/cup, cups-to-grams table, and measuring tips for baking and cooking.`,
     pathname: `/ingredients/${ingredient}`,
   });

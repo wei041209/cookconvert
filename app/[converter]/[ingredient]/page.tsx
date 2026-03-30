@@ -78,7 +78,10 @@ function getConverterTitle(converter: string, ingredient: string): string {
 function getConverterMetaTitle(converter: string, ingredient: string): string {
   const ingredientName = INGREDIENT_NAMES[ingredient];
   const units = getUnits(converter);
-  return `${units.from} to ${units.to} for ${ingredientName} — Accurate Conversion Chart & Free Calculator`;
+  if (converter === 'cups-to-grams' || converter === 'grams-to-cups') {
+    return `${units.from} to ${units.to} for ${ingredientName} — Exact Conversion Chart + Calculator`;
+  }
+  return `${units.from} to ${units.to} for ${ingredientName} — Accurate Weight Conversion + Calculator`;
 }
 
 function getUnits(converter: string): { from: string; to: string } {

@@ -1,19 +1,7 @@
 import { cupsToGrams, formatNumber, gramsToCups } from '@/lib/conversion';
-import { normalizePathname } from '@/lib/path';
 import { INGREDIENT_DENSITIES } from '@/lib/registry';
 
 type ConversionUnit = 'grams' | 'cups';
-
-const CTR_CHART_EXPERIMENT_PATHS = new Set<string>([
-  '/q/100-grams-granulated-sugar-to-cups',
-  '/cups-to-grams/soy-sauce',
-  '/grams-to-cups/heavy-cream',
-  '/q/200-grams-breadcrumbs-to-cups',
-  '/q/200-grams-condensed-milk-to-cups',
-  '/q/250-grams-coconut-shredded-to-cups',
-  '/q/2-cups-cucumber-chopped-to-grams',
-  '/q/100-grams-hummus-to-cups',
-]);
 
 export interface ConversionChartData {
   headers: [string, string];
@@ -29,7 +17,9 @@ interface GetConversionChartDataParams {
 }
 
 export function isCtrConversionChartExperimentPath(pathname: string): boolean {
-  return CTR_CHART_EXPERIMENT_PATHS.has(normalizePathname(pathname));
+  // Roll out chart UX to all supported grams<->cups conversion pages.
+  // Keeping this function preserves existing call sites and behavior contracts.
+  return Boolean(pathname);
 }
 
 function toTitleCase(value: ConversionUnit): string {
